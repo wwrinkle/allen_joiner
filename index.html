@@ -10,41 +10,144 @@
         html {
             font-family: 'Roboto Slab', serif;
             text-align: center;
-            margin-bottom: 3em;
+        }
+
+        body {
+            margin: 0;
         }
 
         div {
+
             padding: 1em;
-            background-color: #deb99c78;
+        }
+
+        .panel {
             max-width: 200px;
             margin: 1em auto;
+            background-color: #deb99c78;
         }
 
         img {
             width: 90vw;
             max-width: 400px;
+            position: relative;
+            z-index: 1;
+        }
+
+        footer {
+            text-align: right;
+            position: absolute;
+            right: 0;
+        }
+
+        .container {
+            margin: 8px;
+            display: inline;
+        }
+
+        #orb {
+            position: fixed;
+            border-radius: 50%;
+            cursor: pointer;
+            background-color: #deb99c78;
+            transition-property: top, left;
+            transition-timing-function: ease-in-out;
+            visibility: hidden;
+            top: 0;
+            left: 0;
         }
     </style>
 </head>
 
 <body>
-    <h2>Allen Joiner</h2>
-    <p>Here's my contact info:</p>
-    <address>
-        <a href="mailto:allen@joiner.com">allen@joiner.com</a><br>
-        <a href="tel:+19725552368">(972) 555-2368</a>
-    </address>
-    <a href="https://www.instagram.com/allen.joiner/?hl=en">
-        <div>
-            <i class="fa fa-instagram"></i>Instagram
-        </div>
-    </a>
-    <a href="https://www.facebook.com/profile.php?id=100072104565142">
-        <div>
-            <i class="fa fa-facebook"></i>Facebook
-        </div>
-    </a>
-    <img src="./img/pavers.jpg" alt="Allen Joiner" />
+    <div class="container">
+        <h2>Allen Joiner</h2>
+        <p>Here's my contact info:</p>
+        <address>
+            <a href="mailto:allen@joiner.com">allen@joiner.com</a><br>
+            <a href="tel:+19725552368">(972) 555-2368</a>
+        </address>
+        <a href="https://www.instagram.com/allen.joiner/?hl=en">
+            <div class="panel">
+                <i class="fa fa-instagram"></i>Instagram
+            </div>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=100072104565142">
+            <div class="panel">
+                <i class="fa fa-facebook"></i>Facebook
+            </div>
+        </a>
+        <img src="./img/pavers.jpg" alt="Allen Joiner" />
+        <footer>
+            <a href="" onclick="footerClick(event)">Try Me &#128516;</a>
+        </footer>
+    </div>
+    <div id="orb" onclick="youWin()"></div>
 </body>
+<script>
+    const MAX_BOUNCE_DURATION = 10;
+    const WIN_TEXT = "Are you over 18?";
+    const WIN_URL = "https://d1yjjnpx0p53s8.cloudfront.net/styles/logo-original-577x577/s3/082011/goatse_0.png?itok=Pqc-LVWp";
+
+    function footerClick(e) {
+        e.preventDefault();
+        showOrb();
+    }
+
+    const orbElement = document.querySelector("#orb");
+    orbElement.addEventListener("transitionend", animateOrb);
+
+    function showOrb() {
+        if (orbElement.style.visibility === "visible") {
+            return;
+        }
+        orbElement.style.visibility = "visible";
+        animateOrb();
+    }
+
+    function youWin() {
+        if (confirm(WIN_TEXT) === true) {
+            window.location.href = WIN_URL;
+        }
+    }
+
+    function getRandomValue(maxValue) {
+        return Math.floor(Math.random() * maxValue);
+    }
+
+    function getExtremeValue(maxValue, currentValue) {
+        if (currentValue === 0) {
+            return maxValue;
+        } else if (currentValue === maxValue) {
+            return 0;
+        } else {
+            const isExtreme = Math.random() <= 0.5;
+            return isExtreme ? maxValue : 0;
+        }
+    }
+
+    function getNextPosition() {
+        const currentPosition = {
+            x: orbElement.offsetLeft,
+            y: orbElement.offsetTop
+        };
+        const max = {
+            x: window.innerWidth - orbElement.offsetWidth,
+            y: window.innerHeight - orbElement.offsetHeight
+        };
+        const xIsRandom = Math.random() <= .5;
+        return {
+            x: xIsRandom ? getRandomValue(max.x) : getExtremeValue(max.x, currentPosition.x),
+            y: xIsRandom ? getExtremeValue(max.y, currentPosition.y) : getRandomValue(max.y)
+        };
+    }
+
+    function animateOrb() {
+        const nextPosition = getNextPosition();
+        orbElement.style.transitionDuration = `${MAX_BOUNCE_DURATION * Math.random()}s`;
+        orbElement.style.left = `${nextPosition.x}px`;
+        orbElement.style.top = `${nextPosition.y}px`;
+    }
+</script>
 
 </html>
